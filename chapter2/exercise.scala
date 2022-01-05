@@ -1,4 +1,4 @@
-object Excersise {
+object Exersise {
   def fib(n: Int): Int = {
     assert(n > 0)
     @annotation.tailrec

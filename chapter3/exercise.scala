@@ -2,37 +2,35 @@ object Exercise {
   def tail[A](l: List[A]): List[A] =
     l match {
       case Nil      => Nil
-      case x :: Nil => Nil
-      case x :: xs  => xs
+      case _ :: xs  => xs
     }
 
   def setHead[A](l: List[A], y: A): List[A] =
     l match {
       case Nil      => Nil
-      case x :: xs  => y :: xs
+      case _ :: xs  => y :: xs
     }
 
   def drop[A](l: List[A], n: Int): List[A] = {
-    assert(l.length > n);
+    if(l.length < n) sys.error("Taking more elements than list's length")
     l match {
-      case x :: xs if n > 0  => drop(xs, n - 1)
+      case _ :: xs if n > 0  => drop(xs, n - 1)
       case _       if n == 0 => l
     }
   }
 
   def dropWhile[A](l: List[A])(f: A => Boolean): List[A] = {
     l match {
-      case x :: xs  if f(x) == true => dropWhile(xs)(f)
+      case x :: xs  if f(x) => dropWhile(xs)(f)
       case _ => l
     }
   }
 
   def init[A](l: List[A]): List[A] = {
     l match {
-      case x :: Nil      => Nil
-      case x :: y :: Nil => x :: Nil
+      case Nil           => Nil
+      case _ :: Nil      => Nil
       case x :: xs       => x :: init(xs)
-      case _             => Nil
     }
   }
 
