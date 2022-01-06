@@ -48,11 +48,65 @@ object Exercise {
     }
   }
 
+  def append[A](xs: List[A], ys: List[A]): List[A] =
+    foldRight(xs, ys)(_ :: _)
+
+  def add1(as: List[Int]): List[Int] = {
+    as match {
+      case Nil => Nil
+      case x :: xs => (x + 1) :: add1(xs)
+    }
+  }
+
+  def toString(as: List[Double]): List[String] = {
+    as match {
+      case Nil => Nil
+      case x :: xs => x.toString() :: toString(xs)
+    }
+  }
+
+  def map[A,B](as: List[A])(f: A => B): List[B] = {
+    as match {
+      case Nil => Nil
+      case x :: xs => f(x) :: map(xs)(f)
+    }
+  }
+
+  def filter[A](as: List[A])(f: A => Boolean): List[A] =
+    foldRight(as, List[A]())((a, acc) => if (f(a)) a :: acc else acc)
+
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] =
+    foldRight(as, List[B]())((a, acc) => append(f(a), acc))
+
+  def filterViaFlatMap[A](as: List[A])(p: A => Boolean): List[A] = {
+    flatMap(as)(a => if (p(a)) List(a) else List())
+  }
+
+  def zipWith[A,B](as: List[A], bs: List[A])(f: (A,A) => B): List[B] =
+    (as, bs) match {
+      case (x :: xs, y :: ys) => f(x ,y) :: zipWith(xs, ys)(f)
+      case (_, _) => Nil
+    }
+
   def sum[A](as: List[Int]): Int = foldLeft(as, 0)(_ + _)
 
   def product[A](as: List[Int]): Int = foldLeft(as, 1)(_ * _)
 
   def length[A](as: List[A]): Int = foldRight(as, 0)((_, x) => x + 1)
+
+  def runMapTest(): Unit = {
+    assert(map(List(1,2))(x => x+1) == List(2, 3))
+    assert(map(List())(x => x)       == List())
+  }
+
+  def runAdd1Test(): Unit = {
+    assert(add1(List(1,2,3)) == List(2,3,4))
+    assert(add1(List(1))     == List(2))
+  }
+
+  def runAppendTest(): Unit = {
+    assert(append(List(1,2), List(3,4))  == List(1,2,3,4))
+  }
 
   def runSumTest(): Unit = {
     assert(sum(List(1,2,3)) == 6)
@@ -84,11 +138,15 @@ object Exercise {
     assert(setHead(List(6), 9)     == List(9))
   }
 
+  def runZipWithTest(): Unit = {
+    assert(zipWith(List(1,2,3), List(2,3,4))(_ + _) == List(3,5,7))
+  }
+
+  def runFilterTest(): Unit = {
+    assert(filterViaFlatMap(List(2,1,3))(_ > 1) == List(2,3))
+  }
+
   def main(args: Array[String]): Unit = {
-    runTailTest();
-    runSetHeadTest();
-    runDropTest();
-    runDropWhileTest();
-    runSumTest();
+    runZipWithTest()
   }
 }
