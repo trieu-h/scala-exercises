@@ -84,8 +84,15 @@ object Exercise {
 
   def zipWith[A,B](as: List[A], bs: List[A])(f: (A,A) => B): List[B] =
     (as, bs) match {
-      case (x :: xs, y :: ys) => f(x ,y) :: zipWith(xs, ys)(f)
+      case (x :: xs, y :: ys) => f(x, y) :: zipWith(xs, ys)(f)
       case (_, _) => Nil
+    }
+
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean =
+    sup match {
+      case Nil     => false
+      case x :: xs => if (x == sub.head && sup.take(sub.length) == sub)
+                      true else hasSubsequence(xs, sub)
     }
 
   def sum[A](as: List[Int]): Int = foldLeft(as, 0)(_ + _)
@@ -96,7 +103,7 @@ object Exercise {
 
   def runMapTest(): Unit = {
     assert(map(List(1,2))(x => x+1) == List(2, 3))
-    assert(map(List())(x => x)       == List())
+    assert(map(List())(x => x)      == List())
   }
 
   def runAdd1Test(): Unit = {
@@ -105,7 +112,7 @@ object Exercise {
   }
 
   def runAppendTest(): Unit = {
-    assert(append(List(1,2), List(3,4))  == List(1,2,3,4))
+    assert(append(List(1,2), List(3,4)) == List(1,2,3,4))
   }
 
   def runSumTest(): Unit = {
@@ -147,6 +154,6 @@ object Exercise {
   }
 
   def main(args: Array[String]): Unit = {
-    runZipWithTest()
+    println(hasSubsequence(List(2,4,3,1), List(4,3)))
   }
 }
